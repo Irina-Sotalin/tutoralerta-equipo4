@@ -3,6 +3,8 @@ package tutoralerta;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.Collator;
 import java.time.LocalDate;
@@ -54,6 +56,11 @@ public class Repositorio {
         evaluaciones.clear();
         notas.clear();
         try {
+            asegurarArchivo("estudiantes.csv", ENC_ESTUDIANTES);
+            asegurarArchivo("asistencia.csv", ENC_ASISTENCIA);
+            asegurarArchivo("evaluaciones.csv", ENC_EVALUACIONES);
+            asegurarArchivo("notas.csv", ENC_NOTAS);
+
             for (String[] f : CsvUtil.leer(carpeta.resolve("estudiantes.csv"))) {
                 if (f.length >= 4) {
                     estudiantes.add(new Estudiante(f[0].trim(), f[1].trim(), f[2].trim(), f[3].trim()));
@@ -93,6 +100,13 @@ public class Repositorio {
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void asegurarArchivo(String nombreArchivo, String encabezado) throws IOException {
+        Path archivo = carpeta.resolve(nombreArchivo);
+        if (!Files.exists(archivo)) {
+            CsvUtil.escribir(archivo, encabezado, Collections.emptyList());
         }
     }
 
@@ -182,6 +196,27 @@ public class Repositorio {
     public synchronized Map<String, BigDecimal> notasDe(int idEvaluacion) {
         Map<String, BigDecimal> guardadas = notas.get(idEvaluacion);
         return guardadas == null ? new HashMap<>() : new HashMap<>(guardadas);
+    }
+
+    /** Promedio simple (media aritmética) de todas las notas registradas de un estudiante. */
+    public synchronized BigDecimal promedioDe(String cedula) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            return null;
+        }
+        String ced = cedula.trim();
+        BigDecimal suma = BigDecimal.ZERO;
+        int cantidad = 0;
+        for (Map<String, BigDecimal> notasEval : notas.values()) {
+            BigDecimal calif = notasEval.get(ced);
+            if (calif != null) {
+                suma = suma.add(calif);
+                cantidad++;
+            }
+        }
+        if (cantidad == 0) {
+            return null;
+        }
+        return suma.divide(BigDecimal.valueOf(cantidad), 2, RoundingMode.HALF_UP);
     }
 
     /**
