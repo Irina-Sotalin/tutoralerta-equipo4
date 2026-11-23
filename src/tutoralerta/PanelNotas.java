@@ -34,7 +34,8 @@ public class PanelNotas extends JPanel {
     private final JComboBox<Evaluacion> combo = new JComboBox<>(modeloCombo);
     private final JLabel lblEstado = new JLabel(" ");
     private final DefaultTableModel modelo = new DefaultTableModel(
-            new Object[]{"Cédula", "Apellidos", "Nombres", "Nota (0 a " + Validador.NOTA_MAX.toPlainString() + ")"},
+            new Object[]{"Cédula", "Apellidos", "Nombres",
+                    "Nota (0 a " + Validador.NOTA_MAX.toPlainString() + ")", "Promedio"},
             0) {
         private static final long serialVersionUID = 1L;
 
@@ -124,8 +125,14 @@ public class PanelNotas extends JPanel {
         modelo.setRowCount(0);
         for (Estudiante e : lista) {
             BigDecimal nota = guardadas.get(e.getCedula());
-            modelo.addRow(new Object[]{e.getCedula(), e.getApellidos(), e.getNombres(),
-                    nota == null ? "" : nota.toPlainString()});
+            BigDecimal promedio = repo.promedioDe(e.getCedula());
+            modelo.addRow(new Object[]{
+                    e.getCedula(),
+                    e.getApellidos(),
+                    e.getNombres(),
+                    nota == null ? "" : nota.toPlainString(),
+                    promedio == null ? "-" : promedio.toPlainString()
+            });
         }
     }
 
@@ -155,6 +162,7 @@ public class PanelNotas extends JPanel {
         }
         idAbierta = repo.guardarEvaluacion(idAbierta, txtNombre.getText(), fecha, notas);
         refrescar();
+        llenarTabla(repo.notasDe(idAbierta));
         estado("Evaluación guardada. Puede verla de nuevo con \"Abrir\".", new Color(0, 120, 0));
         Mensajes.info(this, "La evaluación se guardó con las notas de todo el curso.");
     }
