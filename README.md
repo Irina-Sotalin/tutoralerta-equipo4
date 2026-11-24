@@ -5,19 +5,20 @@ Proyecto IB – ISID432 Desarrollo y Mantenimiento de Software – Escuela Polit
 
 ## Equipo
 
-- **Nombre del equipo:** [nombre del equipo]
+- **Nombre del equipo:** Equipo 4
 - **Escenario:** B – TutorAlerta, alerta temprana de riesgo académico (Equipo 4)
 
 | Integrante | Rol |
 | --- | --- |
-| [Nombre 1] | Product Owner |
-| [Nombre 2] | Scrum Master |
-| [Nombre 3] | Desarrollador |
-| [Nombre 4] | Desarrollador |
+| Irina Sotalin | Desarrolladora / QA Lead |
+| Milene Robalino | Scrum Master + Desarrolladora |
+| Chenoa Rosales | Product Owner + Desarrolladora |
+| Diego Pacheco | Desarrollador |
+
 
 ## Tablero de Trello
 
-[Pegar aquí el enlace del tablero de Trello]
+https://trello.com/b/6b0515ac6fbbdbe271057522
 
 ## Historias del Sprint 1
 
@@ -42,7 +43,7 @@ La aplicación lee y guarda sus datos en la carpeta `dist/datos` (archivos CSV),
 Requisito: JDK 11 o superior (`javac -version`).
 
 - Windows: doble clic en `compilar.bat`.
-- Linux / macOS: `./compilar.sh`
+- Linux / macOS: `bash compilar.sh`
 
 Esto genera `dist/TutorAlerta.jar`. También se puede abrir la carpeta en un IDE (NetBeans, IntelliJ, Eclipse) y ejecutar la clase `tutoralerta.Main` desde la raíz del proyecto.
 

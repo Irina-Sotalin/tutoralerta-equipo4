@@ -1,5 +1,4 @@
 package tutoralerta;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -127,8 +126,15 @@ public class PanelAsistencia extends JPanel {
             throw new ValidacionException("Primero elija la fecha y pulse \"Cargar lista\".");
         }
         LocalDate fecha = Validador.parseFecha(txtFecha.getText());
-        Map<String, Boolean> asistencia = new LinkedHashMap<>();
-        int presentes = 0;
+
+	if (repo.existeSesion(fecha)) {
+    	throw new ValidacionException(
+        "Ya existe una sesión registrada para esta fecha."
+    	);
+	}
+
+	Map<String, Boolean> asistencia = new LinkedHashMap<>();
+	int presentes = 0;
         for (int i = 0; i < modelo.getRowCount(); i++) {
             boolean presente = Boolean.TRUE.equals(modelo.getValueAt(i, 0));
             asistencia.put(String.valueOf(modelo.getValueAt(i, 1)), presente);
