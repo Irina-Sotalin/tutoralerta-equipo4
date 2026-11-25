@@ -128,13 +128,12 @@ public class PanelAsistencia extends JPanel {
         LocalDate fecha = Validador.parseFecha(txtFecha.getText());
 
 	if (repo.existeSesion(fecha)) {
-    	throw new ValidacionException(
-        "Ya existe una sesión registrada para esta fecha."
-    	);
-	}
+            throw new ValidacionException("Ya existe una sesión registrada el " + Validador.formatear(fecha)
+                    + ". No se creó otra.");
+        }
+        Map<String, Boolean> asistencia = new LinkedHashMap<>();
+        int presentes = 0;
 
-	Map<String, Boolean> asistencia = new LinkedHashMap<>();
-	int presentes = 0;
         for (int i = 0; i < modelo.getRowCount(); i++) {
             boolean presente = Boolean.TRUE.equals(modelo.getValueAt(i, 0));
             asistencia.put(String.valueOf(modelo.getValueAt(i, 1)), presente);
