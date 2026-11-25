@@ -29,6 +29,7 @@ public class PanelEstudiantes extends JPanel {
     private final JButton btnGuardar = new JButton("Guardar cambios");
     private final JButton btnNuevo = new JButton("Limpiar / Nuevo");
     private final JLabel lblEstado = new JLabel(" ");
+    private final JLabel lblTotal = new JLabel(" ");
     private final DefaultTableModel modelo = new DefaultTableModel(
             new Object[]{"Cédula", "Apellidos", "Nombres", "Correo"}, 0) {
         private static final long serialVersionUID = 1L;
@@ -72,12 +73,22 @@ public class PanelEstudiantes extends JPanel {
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tabla.setAutoCreateRowSorter(false);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
-        add(new JLabel("Seleccione un estudiante de la lista para editar sus nombres, apellidos o correo."),
-                BorderLayout.SOUTH);
+        JPanel pie = new JPanel(new BorderLayout());
+        pie.add(new JLabel("Seleccione un estudiante de la lista para editar sus nombres, apellidos o correo."),
+                BorderLayout.WEST);
+        pie.add(lblTotal, BorderLayout.EAST);
+        add(pie, BorderLayout.SOUTH);
 
         btnRegistrar.addActionListener(e -> Mensajes.proteger(this, this::registrar));
         btnGuardar.addActionListener(e -> Mensajes.proteger(this, this::guardarCambios));
         btnNuevo.addActionListener(e -> limpiar());
+        txtCorreo.addActionListener(e -> Mensajes.proteger(this, () -> { // Enter en el último campo
+            if (btnRegistrar.isEnabled()) {
+                registrar();
+            } else {
+                guardarCambios();
+            }
+        }));
         tabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && !actualizando) {
                 seleccionar();
@@ -103,6 +114,7 @@ public class PanelEstudiantes extends JPanel {
             modelo.addRow(new Object[]{e.getCedula(), e.getApellidos(), e.getNombres(), e.getCorreo()});
         }
         actualizando = false;
+        lblTotal.setText("Total de estudiantes: " + modelo.getRowCount());
     }
 
     private void registrar() {
@@ -131,6 +143,7 @@ public class PanelEstudiantes extends JPanel {
         txtNombres.setText(String.valueOf(modelo.getValueAt(fila, 2)));
         txtCorreo.setText(String.valueOf(modelo.getValueAt(fila, 3)));
         txtCedula.setEditable(false); // la cédula no se puede cambiar
+        txtCedula.setBackground(new Color(235, 235, 235)); // se ve bloqueada
         btnRegistrar.setEnabled(false);
         btnGuardar.setEnabled(true);
         estado("Editando: la cédula no se puede modificar.", Color.DARK_GRAY);
@@ -145,6 +158,7 @@ public class PanelEstudiantes extends JPanel {
         txtApellidos.setText("");
         txtCorreo.setText("");
         txtCedula.setEditable(true);
+        txtCedula.setBackground(Color.WHITE);
         btnRegistrar.setEnabled(true);
         btnGuardar.setEnabled(false);
     }
