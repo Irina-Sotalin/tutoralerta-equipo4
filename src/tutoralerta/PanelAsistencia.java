@@ -127,7 +127,7 @@ public class PanelAsistencia extends JPanel {
         }
         LocalDate fecha = Validador.parseFecha(txtFecha.getText());
 
-	if (repo.existeSesion(fecha)) {
+	    if (repo.existeSesion(fecha)) {
             throw new ValidacionException("Ya existe una sesión registrada el " + Validador.formatear(fecha)
                     + ". No se creó otra.");
         }
